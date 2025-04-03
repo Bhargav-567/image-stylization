@@ -228,6 +228,7 @@ def align_face(filepath, output_size=1024, transform_size=4096, enable_padding=T
             img = img.resize((output_size, output_size), Image.LANCZOS)
 
         return img
+        return Image.fromarray(aligned_face_np) if isinstance(aligned_face_np, np.ndarray) else aligned_face_np
 
     except Exception as e:
         print(f"Alignment error: {str(e)}")
