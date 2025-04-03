@@ -14,6 +14,8 @@ def projection(img, name, device='cuda'):
 
     if isinstance(img, np.ndarray):
         img = Image.fromarray(img)
+    if not isinstance(img, Image.Image):
+        raise TypeError(f"Expected PIL Image or numpy array, got {type(img)}")
         
     model_path = 'models/e4e_ffhq_encode.pt'
     ckpt = torch.load(model_path, map_location='cpu')
