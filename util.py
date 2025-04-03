@@ -142,8 +142,8 @@ def align_face(filepath, output_size=1024, transform_size=4096, enable_padding=T
     Align face using face_recognition or OpenCV as fallback
     """
     pil_image = Image.open(filepath).convert('RGB')
-    img = np.array(pil_image).astype(np.uint8)
-    img = np.ascontiguousarray(img)
+    img = np.array(pil_image)  #.astype(np.uint8)
+    # img = np.ascontiguousarray(img)
 
     try:
         lm = get_landmark(filepath)
@@ -192,14 +192,13 @@ def align_face(filepath, output_size=1024, transform_size=4096, enable_padding=T
         qsize /= shrink
 
     # Crop.
-    border = max(int(np.rint(qsize * 0.1)), 3)
-    crop = (int(np.floor(min(quad[:, 0]))), int(np.floor(min(quad[:, 1]))), int(np.ceil(max(quad[:, 0]))),
-            int(np.ceil(max(quad[:, 1]))))
-    crop = (max(crop[0] - border, 0), max(crop[1] - border, 0), min(crop[2] + border, img.size[0]),
-            min(crop[3] + border, img.size[1]))
-    if crop[2] - crop[0] < img.size[0] or crop[3] - crop[1] < img.size[1]:
-        img = img.crop(crop)
-        quad -= crop[0:2]
+    width, height = img.size  # Get image dimensions properly
+        crop = (
+            max(int(np.floor(min(quad[:, 0]))) - border, 0),
+            max(int(np.floor(min(quad[:, 1]))) - border, 0),
+            min(int(np.ceil(max(quad[:, 0]))) + border, width),
+            min(int(np.ceil(max(quad[:, 1]))) + border, height)
+        )
 
     # Pad.
     pad = (int(np.floor(min(quad[:, 0]))), int(np.floor(min(quad[:, 1]))), int(np.ceil(max(quad[:, 0]))),
