@@ -11,6 +11,10 @@ from util import *
 
 @ torch.no_grad()
 def projection(img, name, device='cuda'):
+
+    if isinstance(img, np.ndarray):
+        img = Image.fromarray(img)
+        
     model_path = 'models/e4e_ffhq_encode.pt'
     ckpt = torch.load(model_path, map_location='cpu')
     opts = ckpt['opts']
